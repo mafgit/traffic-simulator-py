@@ -1,5 +1,5 @@
 import pygame
-from collections import deque
+from Graph import Graph
 
 pygame.init()
 MAX_WIDTH = 1000
@@ -18,81 +18,6 @@ BLACK = (0, 0, 0)
 
 # font
 font = pygame.font.Font(None, 28)
-
-class PriorityQueue:
-    def __init__(self):
-        self.arr = []
-    
-    def push(self, item):
-        self.arr.append(item)
-        self.arr.sort(reverse=True, key=lambda x: x[0]) # desc
-
-    def pop(self):
-        if self.isEmpty():
-            return None
-        return self.arr.pop()
-    
-    def isEmpty(self):
-        return len(self.arr) == 0
-
-class Graph:
-    def __init__(self):
-        self.vertices = {}
-        self.edges = {}
-    
-    def add_vertex(self, v, pos):
-        self.vertices[v] = pos
-
-    def add_edge(self, u, v, w, bi=False):
-        self.edges[(u, v, bi)] = w
-        if bi:
-            self.edges[(v, u, bi)] = w
-    
-    def dijkstra(self, start, end):
-        visited = set()
-        distances = {vertex: float('inf') for vertex in self.vertices}
-        parents = {}
-        pq = PriorityQueue()
-        pq.push((0, start))
-        parents[start] = None
-        distances[start] = 0
-
-        while not pq.isEmpty():
-            curr = pq.pop()
-            print(curr)
-            if (curr[1] == end):
-                break
-            if(curr[1] in visited):
-                continue
-
-            visited.add(curr[1])
-            for (u,v,type), w  in self.edges.items():
-                if u == curr[1] and v not in visited:
-                    if w + distances[u] < distances[v]:
-                        distances[v] = w + distances[u]
-                        parents[v] = u
-                        pq.push((distances[v], v))
-        
-        curr = end
-        path = []
-        while curr is not None:
-            path.append(curr)
-            curr = parents.get(curr)
-
-        return path[::-1] if distances.get(end) != float('inf') and distances.get(end) != None else []
-
-
-
-
-# class Vehicle:
-#     def __init__(self, color, pos):
-#         # self.u = u
-#         # self.v = v
-#         # self.curr_vertex = u
-#         self.color = color
-#         self.speed = 0.01
-#         self.x = pos[0]
-#         self.y = pos[1]
 
 
 graph = Graph()
@@ -183,14 +108,15 @@ while run:
 
         
     # drawing map
+    for (u, v, bi), w in graph.edges.items():
+        color = GRAY if bi else GREEN
+        pygame.draw.line(screen, color, graph.vertices[u], graph.vertices[v], 2)
+    
     for v, pos in graph.vertices.items():
         pygame.draw.circle(screen, BLUE, pos, 10)
         text_surface = font.render(v, True, WHITE)
         screen.blit(text_surface, (pos[0] + 10, pos[1] + 10))
         
-    for (u, v, bi), w in graph.edges.items():
-        color = GRAY if bi else GREEN
-        pygame.draw.line(screen, color, graph.vertices[u], graph.vertices[v], 2)
         
     # screen.blit(screen, (0, 0))
     # screen.blit(screen, (0, 0))
