@@ -37,6 +37,8 @@ graph.add_vertex('K', (300, 600))
 graph.add_vertex('L', (500, 600))
 graph.add_vertex('M', (700, 600))
 graph.add_vertex('N', (900, 600))
+graph.add_vertex('O', (500, 300))
+graph.add_vertex('P', (500, 400))
 
 # adding bidirectional edges
 graph.add_edge('A', 'B', 1, True)
@@ -55,10 +57,13 @@ graph.add_edge('H', 'J', 1, True)
 graph.add_edge('J', 'H', 1, True)
 graph.add_edge('I', 'N', 1, True)
 graph.add_edge('N', 'I', 1, True)
+graph.add_edge('O', 'P', 1, True)
 
 # adding single direction edges
-graph.add_edge('F', 'G', 1, False)
-graph.add_edge('I', 'H', 1, False)
+graph.add_edge('F', 'O', 1, False)
+graph.add_edge('O', 'G', 1, False)
+graph.add_edge('I', 'P', 1, False)
+graph.add_edge('P', 'H', 1, False)
 
 print(graph.dijkstra('A', 'Z'))
 
@@ -70,7 +75,7 @@ print(graph.dijkstra('A', 'Z'))
 
 # 
 u = 'A'
-v = 'E'
+v = 'L'
 start_pos = graph.vertices[u]
 path = graph.dijkstra(u, v)
 i = 1
