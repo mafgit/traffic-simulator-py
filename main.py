@@ -1,5 +1,7 @@
 import pygame
 from Graph import Graph
+from create_graph import create_graph
+from Vehicle import Vehicle
 
 pygame.init()
 MAX_WIDTH = 1000
@@ -13,78 +15,34 @@ RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 GREEN = (0, 255, 0)
 WHITE = (255, 255, 255)
-GRAY = (180, 180, 180)
+GRAY = (184, 184, 184)
 BLACK = (0, 0, 0)
+ORANGE = (255, 165, 0)
+PINK = (255, 20, 147)
+PURPLE = (128, 0, 128)
+YELLOW = (255, 255, 0)
 
 # font
 font = pygame.font.Font(None, 28)
 
 
 graph = Graph()
+create_graph(graph)
 
-# adding vertices
-graph.add_vertex('A', (100, 100))
-graph.add_vertex('B', (300, 100))
-graph.add_vertex('C', (500, 100))
-graph.add_vertex('D', (700, 100))
-graph.add_vertex('E', (900, 100))
-graph.add_vertex('F', (100, 300))
-graph.add_vertex('G', (900, 300))
-graph.add_vertex('H', (100, 400))
-graph.add_vertex('I', (900, 400))
-graph.add_vertex('J', (100, 600))
-graph.add_vertex('K', (300, 600))
-graph.add_vertex('L', (500, 600))
-graph.add_vertex('M', (700, 600))
-graph.add_vertex('N', (900, 600))
-graph.add_vertex('O', (500, 300))
-graph.add_vertex('P', (500, 400))
 
-# adding bidirectional edges
-graph.add_edge('A', 'B', 1, True)
-graph.add_edge('B', 'C', 1, True)
-graph.add_edge('C', 'D', 1, True)
-graph.add_edge('D', 'E', 1, True)
-graph.add_edge('J', 'K', 1, True)
-graph.add_edge('K', 'L', 1, True)
-graph.add_edge('L', 'M', 1, True)
-graph.add_edge('M', 'N', 1, True)
-graph.add_edge('A', 'F', 1, True)
-graph.add_edge('F', 'A', 1, True)
-graph.add_edge('G', 'E', 1, True)
-graph.add_edge('E', 'G', 1, True)
-graph.add_edge('H', 'J', 1, True)
-graph.add_edge('J', 'H', 1, True)
-graph.add_edge('I', 'N', 1, True)
-graph.add_edge('N', 'I', 1, True)
-graph.add_edge('O', 'P', 1, True)
 
-# adding single direction edges
-graph.add_edge('F', 'O', 1, False)
-graph.add_edge('O', 'G', 1, False)
-graph.add_edge('I', 'P', 1, False)
-graph.add_edge('P', 'H', 1, False)
-
-print(graph.dijkstra('A', 'Z'))
-
-# screen = pygame.Surface((MAX_WIDTH, MAX_HEIGHT), pygame.SRCALPHA)
-# screen.fill(BLACK)
-
-# screen = pygame.Surface((MAX_WIDTH, MAX_HEIGHT),pygame.SRCALPHA)
-# screen.fill(BLACK)
-
-# 
-u = 'A'
-v = 'L'
-start_pos = graph.vertices[u]
-path = graph.dijkstra(u, v)
-i = 1
-speed = 0.01
-t = 0
-# 
+vehicles = [
+    Vehicle('A', 'E', 0.01, PURPLE, graph), 
+    Vehicle('J', 'N', 0.01, ORANGE, graph), 
+    Vehicle('H', 'I', 0.01, PINK, graph), 
+    Vehicle('F', 'G', 0.01, YELLOW, graph), 
+    Vehicle('A', 'F', 0.01, RED, graph), 
+    Vehicle('G', 'E', 0.01, GREEN, graph), 
+    Vehicle('H', 'J', 0.01, BLUE, graph), 
+    Vehicle('I', 'N', 0.01, WHITE, graph),
+]
 
 # game loop
-t=0
 clock = pygame.time.Clock()
 run = True
 while run:
@@ -92,35 +50,33 @@ while run:
         if event.type == pygame.QUIT:
             run = False
 
-    # surface.fill((255, 0, 0))
-    # screen.blit(surface, (0, 0))
-
-
-    # drawing vehicles
-    if (i < len(path)):
-        end_pos = graph.vertices[path[i]]
-        x = start_pos[0] + (end_pos[0] - start_pos[0]) * t
-        y = start_pos[1] + (end_pos[1] - start_pos[1]) * t
-
-        screen.fill(BLACK)
-        pygame.draw.rect(screen, RED, (x-5, y-5, 10, 10))
-        
-        t += speed
-        if (t>=1):
-            t = 0
-            i += 1
-            start_pos = end_pos
-
+    screen.fill(BLACK)
         
     # drawing map
     for (u, v, bi), w in graph.edges.items():
         color = GRAY if bi else GREEN
-        pygame.draw.line(screen, color, graph.vertices[u], graph.vertices[v], 2)
+        pygame.draw.line(screen, color, graph.vertices[u], graph.vertices[v], 30)
     
     for v, pos in graph.vertices.items():
-        pygame.draw.circle(screen, BLUE, pos, 10)
+        pygame.draw.rect(screen, BLUE, (pos[0]-15, pos[1]-15, 30, 30))
         text_surface = font.render(v, True, WHITE)
-        screen.blit(text_surface, (pos[0] + 10, pos[1] + 10))
+        screen.blit(text_surface, (pos[0]-7.5, pos[1]-7.5))
+
+
+    # drawing vehicles
+    for vehicle in vehicles:
+        if (vehicle.i < len(vehicle.path)):
+            vehicle.end_pos = graph.vertices[vehicle.path[vehicle.i]]
+            vehicle.x = vehicle.start_pos[0] + (vehicle.end_pos[0] - vehicle.start_pos[0]) * vehicle.t
+            vehicle.y = vehicle.start_pos[1] + (vehicle.end_pos[1] - vehicle.start_pos[1]) * vehicle.t
+
+            pygame.draw.rect(screen, vehicle.color, (vehicle.x-5, vehicle.y-5, 10, 10))
+            
+            vehicle.t += vehicle.speed
+            if (vehicle.t>=1):
+                vehicle.t = 0
+                vehicle.i += 1
+                vehicle.start_pos = vehicle.end_pos
         
         
     # screen.blit(screen, (0, 0))
