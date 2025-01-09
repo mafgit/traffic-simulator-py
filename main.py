@@ -51,21 +51,22 @@ while run:
 
     screen.fill(BLACK)
         
-    # drawing map
-    for (u, v, bi), w in graph.edges.items():
-        color = GRAY if bi else GREEN
-        pygame.draw.line(screen, color, graph.vertices[u], graph.vertices[v], 30)
+    # drawing edges
+    for (u, v), edge in graph.edges.items():
+        color = GRAY if edge['bi'] else GREEN
+        pygame.draw.line(screen, color, graph.vertices[u]['pos'], graph.vertices[v]['pos'], 30)
     
-    for v, pos in graph.vertices.items():
-        pygame.draw.rect(screen, BLUE, (pos[0]-15, pos[1]-15, 30, 30))
+    # drawing vertices
+    for v, vertex in graph.vertices.items():
+        pygame.draw.rect(screen, BLUE, (vertex['pos'][0]-15, vertex['pos'][1]-15, 32, 31))
         text_surface = font.render(v, True, WHITE)
-        screen.blit(text_surface, (pos[0]-7.5, pos[1]-7.5))
+        screen.blit(text_surface, (vertex['pos'][0]-7, vertex['pos'][1]-7.5))
 
 
     # drawing vehicles
     for vehicle in vehicles:
         if (vehicle.i < len(vehicle.path)):
-            vehicle.end_pos = graph.vertices[vehicle.path[vehicle.i]]
+            vehicle.end_pos = graph.vertices[vehicle.path[vehicle.i]]['pos']
             vehicle.x = vehicle.start_pos[0] + (vehicle.end_pos[0] - vehicle.start_pos[0]) * vehicle.t
             vehicle.y = vehicle.start_pos[1] + (vehicle.end_pos[1] - vehicle.start_pos[1]) * vehicle.t
 

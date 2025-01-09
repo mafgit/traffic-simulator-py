@@ -5,13 +5,14 @@ class Graph:
         self.vertices = {}
         self.edges = {}
     
-    def add_vertex(self, v, pos):
-        self.vertices[v] = pos
+    def add_vertex(self, v, pos, type='point'):
+        self.vertices[v] = {'pos':pos, 'type':type}
 
-    def add_edge(self, u, v, w, bi=False):
-        self.edges[(u, v, bi)] = w
+    def add_edge(self, u, v, dist=1, max_traffic = 5, bi=False):
+        edge = {'bi':bi, 'max_traffic':max_traffic, 'traffic':0, 'dist':dist}
+        self.edges[(u, v)] = edge
         if bi:
-            self.edges[(v, u, bi)] = w
+            self.edges[(v, u)] = edge
     
     def dijkstra(self, start, end):
         visited = set()
@@ -31,10 +32,10 @@ class Graph:
                 continue
 
             visited.add(curr[1])
-            for (u,v,type), w  in self.edges.items():
+            for (u,v), edge  in self.edges.items():
                 if u == curr[1] and v not in visited:
-                    if w + distances[u] < distances[v]:
-                        distances[v] = w + distances[u]
+                    if edge['dist'] + distances[u] < distances[v]:
+                        distances[v] = edge['dist'] + distances[u]
                         parents[v] = u
                         pq.push((distances[v], v))
         
