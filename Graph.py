@@ -24,7 +24,7 @@ class Graph:
 
         while not pq.isEmpty():
             curr = pq.pop()
-            print(curr)
+            # print(curr)
             if (curr[1] == end):
                 break
             if(curr[1] in visited):

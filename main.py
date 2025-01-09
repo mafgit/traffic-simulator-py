@@ -8,7 +8,6 @@ MAX_WIDTH = 1000
 MAX_HEIGHT = 700
 screen = pygame.display.set_mode((MAX_WIDTH, MAX_HEIGHT))
 pygame.display.set_caption("Traffic Simulation")
-# surface = pygame.Surface((MAX_HEIGHT, MAX_WIDTH))
 
 # colors
 RED = (255, 0, 0)
@@ -32,7 +31,7 @@ create_graph(graph)
 
 
 vehicles = [
-    Vehicle('A', 'E', 0.01, PURPLE, graph), 
+    Vehicle('A', 'B', 0.01, PURPLE, graph), 
     Vehicle('J', 'N', 0.01, ORANGE, graph), 
     Vehicle('H', 'I', 0.01, PINK, graph), 
     Vehicle('F', 'G', 0.01, YELLOW, graph), 
@@ -70,17 +69,15 @@ while run:
             vehicle.x = vehicle.start_pos[0] + (vehicle.end_pos[0] - vehicle.start_pos[0]) * vehicle.t
             vehicle.y = vehicle.start_pos[1] + (vehicle.end_pos[1] - vehicle.start_pos[1]) * vehicle.t
 
-            pygame.draw.rect(screen, vehicle.color, (vehicle.x-5, vehicle.y-5, 10, 10))
-            
             vehicle.t += vehicle.speed
             if (vehicle.t>=1):
                 vehicle.t = 0
                 vehicle.i += 1
                 vehicle.start_pos = vehicle.end_pos
+            
+        pygame.draw.rect(screen, vehicle.color, (vehicle.x-5, vehicle.y-5, 10, 10))
         
         
-    # screen.blit(screen, (0, 0))
-    # screen.blit(screen, (0, 0))
     pygame.display.update()
     clock.tick(60)
 
