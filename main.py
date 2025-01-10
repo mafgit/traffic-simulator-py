@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 from Graph import Graph
 from create_graph import create_graph
 from Vehicle import Vehicle
@@ -6,8 +7,9 @@ from Vehicle import Vehicle
 pygame.init()
 MAX_WIDTH = 1000
 MAX_HEIGHT = 700
-screen = pygame.display.set_mode((MAX_WIDTH, MAX_HEIGHT))
+screen = pygame.display.set_mode((MAX_WIDTH, MAX_HEIGHT), RESIZABLE)
 pygame.display.set_caption("Traffic Simulation")
+# pygame.display.toggle_fullscreen()
 
 # colors
 RED = (255, 0, 0)
@@ -22,7 +24,7 @@ PURPLE = (128, 0, 128)
 YELLOW = (255, 255, 0)
 
 # font
-font = pygame.font.Font(None, 28)
+font = pygame.font.Font(None, 24)
 
 
 graph = Graph()
@@ -31,14 +33,14 @@ create_graph(graph)
 
 
 vehicles = [
-    Vehicle('A', 'B', 0.01, PURPLE, graph), 
-    Vehicle('J', 'N', 0.01, ORANGE, graph), 
-    Vehicle('H', 'I', 0.01, PINK, graph), 
-    Vehicle('F', 'G', 0.01, YELLOW, graph), 
-    Vehicle('A', 'F', 0.01, RED, graph), 
-    Vehicle('G', 'E', 0.01, GREEN, graph), 
-    Vehicle('H', 'J', 0.01, BLUE, graph), 
-    Vehicle('I', 'N', 0.01, WHITE, graph),
+    Vehicle('LA', 'LB', 0.01, PURPLE, graph), 
+    Vehicle('LJ', 'LN', 0.01, ORANGE, graph), 
+    Vehicle('LH', 'LI', 0.01, PINK, graph), 
+    Vehicle('LF', 'LG', 0.01, YELLOW, graph), 
+    Vehicle('LA', 'LF', 0.01, RED, graph), 
+    Vehicle('LG', 'LE', 0.01, GREEN, graph), 
+    Vehicle('LH', 'LJ', 0.01, BLUE, graph), 
+    Vehicle('LI', 'LN', 0.01, WHITE, graph),
 ]
 
 # game loop
@@ -58,7 +60,7 @@ while run:
     
     # drawing vertices
     for v, vertex in graph.vertices.items():
-        pygame.draw.rect(screen, BLUE, (vertex['pos'][0]-15, vertex['pos'][1]-15, 32, 31))
+        pygame.draw.rect(screen, BLUE if vertex['type']=='point' else RED, (vertex['pos'][0]-15, vertex['pos'][1]-15, 32, 31))
         text_surface = font.render(v, True, WHITE)
         screen.blit(text_surface, (vertex['pos'][0]-7, vertex['pos'][1]-7.5))
 
