@@ -6,7 +6,7 @@ class Graph:
         self.edges = {}
     
     def add_vertex(self, v, pos, type='point'):
-        self.vertices[v] = {'pos':pos, 'type':type}
+        self.vertices[v] = {'pos':(pos[0]/3, pos[1]/3 + 250), 'type':type}
 
     def add_edge(self, u, v, dist=1, max_traffic = 5, bi=False):
         edge = {'bi':bi, 'max_traffic':max_traffic, 'traffic':0, 'dist':dist}

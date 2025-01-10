@@ -89,6 +89,97 @@ def create_graph(graph):
     graph.add_edge('RI', 'RP',dist=1, bi=False)
     graph.add_edge('RP', 'RH',dist=1, bi=False)
 
+    # TOP
+
+    # adding vertices
+    graph.add_vertex('TA', (800 + 100, 200 - 100))
+    graph.add_vertex('TB', (800 + 100, 200 - 300))
+    graph.add_vertex('TC', (800 + 100, 200 - 500))
+    graph.add_vertex('TD', (800 + 100, 200 - 700))
+    graph.add_vertex('TE', (800 + 100, 200 - 900))
+    graph.add_vertex('TF', (800 + 200, 200 - 100))
+    graph.add_vertex('TG', (800 + 200, 200 - 900))
+    graph.add_vertex('TH', (800 + 300, 200 - 100))
+    graph.add_vertex('TI', (800 + 300, 200 - 900))
+    graph.add_vertex('TJ', (800 + 400, 200 - 100))
+    graph.add_vertex('TK', (800 + 400, 200 - 300))
+    graph.add_vertex('TL', (800 + 400, 200 - 500))
+    graph.add_vertex('TM', (800 + 400, 200 - 700))
+    graph.add_vertex('TN', (800 + 400, 200 - 900))
+    graph.add_vertex('TO', (800 + 200, 200 - 500))
+    graph.add_vertex('TP', (800 + 300, 200 - 500))
+
+    # adding bidirectional edges
+    graph.add_edge('TA', 'TB',dist=1, bi=True)
+    graph.add_edge('TB', 'TC',dist=1, bi=True)
+    graph.add_edge('TC', 'TD',dist=1, bi=True)
+    graph.add_edge('TD', 'TE',dist=1, bi=True)
+    graph.add_edge('TJ', 'TK',dist=1, bi=True)
+    graph.add_edge('TK', 'TL',dist=1, bi=True)
+    graph.add_edge('TL', 'TM',dist=1, bi=True)
+    graph.add_edge('TM', 'TN',dist=1, bi=True)
+    graph.add_edge('TA', 'TF',dist=1, bi=True)
+    graph.add_edge('TF', 'TA',dist=1, bi=True)
+    graph.add_edge('TG', 'TE',dist=1, bi=True)
+    graph.add_edge('TE', 'TG',dist=1, bi=True)
+    graph.add_edge('TH', 'TJ',dist=1, bi=True)
+    graph.add_edge('TJ', 'TH',dist=1, bi=True)
+    graph.add_edge('TI', 'TN',dist=1, bi=True)
+    graph.add_edge('TN', 'TI',dist=1, bi=True)
+    graph.add_edge('TO', 'TP',dist=1, bi=True)
+
+    # adding single direction edges
+    graph.add_edge('TF', 'TO',dist=1, bi=False)
+    graph.add_edge('TO', 'TG',dist=1, bi=False)
+    graph.add_edge('TI', 'TP',dist=1, bi=False)
+    graph.add_edge('TP', 'TH',dist=1, bi=False)
+
+    
+    # BOTTOM
+
+    # adding vertices
+    graph.add_vertex('BA', (800 + 100, 200 - 100 + 1100))
+    graph.add_vertex('BB', (800 + 100, 200 - 300 + 1100))
+    graph.add_vertex('BC', (800 + 100, 200 - 500 + 1100))
+    graph.add_vertex('BD', (800 + 100, 200 - 700 + 1100))
+    graph.add_vertex('BE', (800 + 100, 200 - 900 + 1100))
+    graph.add_vertex('BF', (800 + 200, 200 - 100 + 1100))
+    graph.add_vertex('BG', (800 + 200, 200 - 900 + 1100))
+    graph.add_vertex('BH', (800 + 300, 200 - 100 + 1100))
+    graph.add_vertex('BI', (800 + 300, 200 - 900 + 1100))
+    graph.add_vertex('BJ', (800 + 400, 200 - 100 + 1100))
+    graph.add_vertex('BK', (800 + 400, 200 - 300 + 1100))
+    graph.add_vertex('BL', (800 + 400, 200 - 500 + 1100))
+    graph.add_vertex('BM', (800 + 400, 200 - 700 + 1100))
+    graph.add_vertex('BN', (800 + 400, 200 - 900 + 1100))
+    graph.add_vertex('BO', (800 + 200, 200 - 500 + 1100))
+    graph.add_vertex('BP', (800 + 300, 200 - 500 + 1100))
+
+    # adding bidirectional edges
+    graph.add_edge('BA', 'BB',dist=1, bi=True)
+    graph.add_edge('BB', 'BC',dist=1, bi=True)
+    graph.add_edge('BC', 'BD',dist=1, bi=True)
+    graph.add_edge('BD', 'BE',dist=1, bi=True)
+    graph.add_edge('BJ', 'BK',dist=1, bi=True)
+    graph.add_edge('BK', 'BL',dist=1, bi=True)
+    graph.add_edge('BL', 'BM',dist=1, bi=True)
+    graph.add_edge('BM', 'BN',dist=1, bi=True)
+    graph.add_edge('BA', 'BF',dist=1, bi=True)
+    graph.add_edge('BF', 'BA',dist=1, bi=True)
+    graph.add_edge('BG', 'BE',dist=1, bi=True)
+    graph.add_edge('BE', 'BG',dist=1, bi=True)
+    graph.add_edge('BH', 'BJ',dist=1, bi=True)
+    graph.add_edge('BJ', 'BH',dist=1, bi=True)
+    graph.add_edge('BI', 'BN',dist=1, bi=True)
+    graph.add_edge('BN', 'BI',dist=1, bi=True)
+    graph.add_edge('BO', 'BP',dist=1, bi=True)
+
+    # adding single direction edges
+    graph.add_edge('BF', 'BO',dist=1, bi=False)
+    graph.add_edge('BO', 'BG',dist=1, bi=False)
+    graph.add_edge('BI', 'BP',dist=1, bi=False)
+    graph.add_edge('BP', 'BH',dist=1, bi=False)
+
     # adding intersections
     graph.add_vertex('ITL', (1000, 200), type="intersection")
     graph.add_vertex('ITR', (1100, 200), type="intersection")
@@ -102,3 +193,5 @@ def create_graph(graph):
     graph.add_edge('IBL', 'ITL')
     graph.add_edge('ITR', 'RF')
     graph.add_edge('RH', 'IBR')
+    graph.add_edge('ITL', 'TF')
+    graph.add_edge('TH', 'ITR')
