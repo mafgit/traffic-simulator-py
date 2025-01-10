@@ -24,7 +24,7 @@ PURPLE = (128, 0, 128)
 YELLOW = (255, 255, 0)
 
 # font
-font = pygame.font.Font(None, 24)
+font = pygame.font.Font(None, 15)
 
 
 graph = Graph()
@@ -33,14 +33,14 @@ create_graph(graph)
 
 
 vehicles = [
-    Vehicle('LA', 'LB', 0.01, PURPLE, graph), 
-    Vehicle('LJ', 'LN', 0.01, ORANGE, graph), 
-    Vehicle('LH', 'LI', 0.01, PINK, graph), 
-    Vehicle('LF', 'LG', 0.01, YELLOW, graph), 
-    Vehicle('LA', 'LF', 0.01, RED, graph), 
-    Vehicle('LG', 'LE', 0.01, GREEN, graph), 
-    Vehicle('LH', 'LJ', 0.01, BLUE, graph), 
-    Vehicle('LI', 'LN', 0.01, WHITE, graph),
+    Vehicle('LA', 'RN', 0.01, PINK, graph), 
+    Vehicle('TE', 'BJ', 0.01, ORANGE, graph), 
+    # Vehicle('LH', 'LI', 0.01, PINK, graph), 
+    # Vehicle('LF', 'LG', 0.01, YELLOW, graph), 
+    # Vehicle('LA', 'LF', 0.01, PINK, graph), 
+    # Vehicle('LG', 'LE', 0.01, ORANGE, graph), 
+    # Vehicle('LH', 'LJ', 0.01, YELLOW, graph), 
+    # Vehicle('LI', 'LN', 0.01, PINK, graph),
 ]
 
 # game loop
@@ -56,13 +56,14 @@ while run:
     # drawing edges
     for (u, v), edge in graph.edges.items():
         color = GRAY if edge['bi'] else GREEN
-        pygame.draw.line(screen, color, graph.vertices[u]['pos'], graph.vertices[v]['pos'], 30)
+        pygame.draw.line(screen, color, graph.vertices[u]['pos'], graph.vertices[v]['pos'], 2)
     
     # drawing vertices
     for v, vertex in graph.vertices.items():
-        pygame.draw.rect(screen, BLUE if vertex['type']=='point' else RED, (vertex['pos'][0]-15, vertex['pos'][1]-15, 32, 31))
+        # pygame.draw.rect(screen, BLUE if vertex['type']=='point' else RED, (vertex['pos'][0]-5, vertex['pos'][1]-5, 10, 10))
+        pygame.draw.circle(screen, BLUE if vertex['type']=='point' else RED, (vertex['pos'][0], vertex['pos'][1]), 3)
         text_surface = font.render(v, True, WHITE)
-        screen.blit(text_surface, (vertex['pos'][0]-7, vertex['pos'][1]-7.5))
+        screen.blit(text_surface, (vertex['pos'][0]+2, vertex['pos'][1] + 2))
 
 
     # drawing vehicles

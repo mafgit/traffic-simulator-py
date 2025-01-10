@@ -195,3 +195,5 @@ def create_graph(graph):
     graph.add_edge('RH', 'IBR')
     graph.add_edge('ITL', 'TF')
     graph.add_edge('TH', 'ITR')
+    graph.add_edge('BG', 'IBL')
+    graph.add_edge('IBR', 'BI')
