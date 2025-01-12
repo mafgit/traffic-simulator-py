@@ -34,20 +34,26 @@ create_graph(graph)
 
 
 vehicles = [
-    Vehicle('LA', 'RN', 0.01, PINK, graph), 
-    Vehicle('TE', 'BJ', 0.01, ORANGE, graph), 
-    # Vehicle('LH', 'LI', 0.01, PINK, graph), 
-    # Vehicle('LF', 'LG', 0.01, YELLOW, graph), 
-    # Vehicle('LA', 'LF', 0.01, PINK, graph), 
-    # Vehicle('LG', 'LE', 0.01, ORANGE, graph), 
-    # Vehicle('LH', 'LJ', 0.01, YELLOW, graph), 
-    # Vehicle('LI', 'LN', 0.01, PINK, graph),
+    Vehicle(0, 'LO', 'RE', PINK, graph), 
+    Vehicle(1, 'TP', 'BA', ORANGE, graph), 
+    Vehicle(2, 'RN', 'LM', BLUE, graph), 
+    Vehicle(3, 'BK', 'TL', YELLOW, graph), 
 ]
 
 traffic_signals = ['ITL', 'ITR', 'IBR', 'IBL']
+stopping_vertices = ['LG', 'TH', 'RH', 'BG']
+
 traffic_i = 0
 traffic_t = 0
-traffic_speed = 0.005
+traffic_speed = 0.0035
+
+def is_stopping_vertex(u):
+    for i in range(len(traffic_signals)):
+        if i != traffic_i:
+            if u == stopping_vertices[i]:
+                return True
+
+    return False
 
 # game loop
 clock = pygame.time.Clock()
@@ -81,12 +87,23 @@ while run:
     # drawing vehicles
     for vehicle in vehicles:
         if (vehicle.i < len(vehicle.path)):
+            # stop vehicle if at traffic signal stopping vertex
+            if is_stopping_vertex(vehicle.path[vehicle.i - 1]):
+                vehicle.speed = 0
+            else:
+                vehicle.speed = 0.01
+
             vehicle.end_pos = graph.vertices[vehicle.path[vehicle.i]]['pos']
+            # graph.enter_edge(vehicle.path[vehicle.i-1], vehicle.path[vehicle.i], vehicle.id)
+            
+
+            # linear interpolation
             vehicle.x = vehicle.start_pos[0] + (vehicle.end_pos[0] - vehicle.start_pos[0]) * vehicle.t
             vehicle.y = vehicle.start_pos[1] + (vehicle.end_pos[1] - vehicle.start_pos[1]) * vehicle.t
 
             vehicle.t += vehicle.speed
             if (vehicle.t>=1):
+                # graph.exit_edge(vehicle.path[vehicle.i-1], vehicle.path[vehicle.i], vehicle.id)
                 vehicle.t = 0
                 vehicle.i += 1
                 vehicle.start_pos = vehicle.end_pos

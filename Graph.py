@@ -9,7 +9,7 @@ class Graph:
         self.vertices[v] = {'pos':(100 + pos[0]/3, pos[1]/3 + 250), 'type':type}
 
     def add_edge(self, u, v, dist=1, max_traffic = 5, bi=False):
-        edge = {'bi':bi, 'max_traffic':max_traffic, 'traffic':0, 'dist':dist}
+        edge = {'bi':bi, 'max_traffic':max_traffic, 'traffic':set(), 'dist':dist}
         self.edges[(u, v)] = edge
         if bi:
             self.edges[(v, u)] = edge
@@ -47,4 +47,16 @@ class Graph:
 
         return path[::-1] if distances.get(end) != float('inf') and distances.get(end) != None else []
 
+    def enter_edge(self, u, v, id):
+        if self.edges.get((u, v)) is None:
+            print((u, v))
+            return
+        if id not in self.edges[(u, v)]['traffic']:
+            self.edges[(u, v)]['traffic'].add(id)
+
+    def exit_edge(self, u, v, id):
+        if self.edges.get((u, v)) is None:
+            return
+        if id in self.edges[(u, v)]['traffic']:
+            self.edges[(u, v)]['traffic'].remove(id)
 

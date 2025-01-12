@@ -1,5 +1,6 @@
 class Vehicle:
-    def __init__(self, u, v, speed, color, graph):
+    def __init__(self, id, u, v, color, graph, speed=0.01):
+        self.id = id
         self.u = u
         self.v = v
         self.start_pos = graph.vertices[u]['pos']
