@@ -15,6 +15,7 @@ pygame.display.set_caption("Traffic Simulation")
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 GREEN = (0, 255, 0)
+DARK_GREEN = (3, 163, 41)
 WHITE = (255, 255, 255)
 GRAY = (184, 184, 184)
 BLACK = (0, 0, 0)
@@ -27,12 +28,11 @@ CYAN = (0, 125, 255)
 # font
 font = pygame.font.Font(None, 15)
 
-
+# creating graph
 graph = Graph()
 create_graph(graph)
 
-
-
+# vehicles
 vehicles = [
     Vehicle(0, 'LO', 'RE', PINK, graph), 
     Vehicle(1, 'TP', 'BA', ORANGE, graph), 
@@ -40,9 +40,9 @@ vehicles = [
     Vehicle(3, 'BK', 'TL', YELLOW, graph), 
 ]
 
+# traffic
 traffic_signals = ['ITL', 'ITR', 'IBR', 'IBL']
 stopping_vertices = ['LG', 'TH', 'RH', 'BG']
-
 traffic_i = 0
 traffic_t = 0
 traffic_speed = 0.0035
@@ -55,21 +55,80 @@ def is_stopping_vertex(u):
 
     return False
 
+img_width = 20
+road_img = pygame.image.load('textures/road.jpg')
+road_img = pygame.transform.scale(road_img, (img_width, img_width))
+
 # game loop
 clock = pygame.time.Clock()
+show_lines = False
 run = True
 while run:
+    bg_color = BLACK if show_lines else DARK_GREEN # can be taken out of loop for performance, but will need to change bgcolor separately on clicking M
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_m:
+                show_lines = not show_lines
 
-    screen.fill(BLACK)
+    screen.fill(bg_color)
         
     # drawing edges
     for (u, v), edge in graph.edges.items():
-        color = GRAY if edge['bi'] else GREEN
-        pygame.draw.line(screen, color, graph.vertices[u]['pos'], graph.vertices[v]['pos'], 2)
-    
+        if show_lines:
+            color = GRAY if edge['bi'] else GREEN
+            pygame.draw.line(screen, color, graph.vertices[u]['pos'], graph.vertices[v]['pos'], 2)
+        else:
+            # problems with drawing roads:
+            # edge b/w 2 points: [ .-]-----[-. ]
+            # some area is left on right and left side, so I must add `img_width` to the length of road
+            # and I should translate the road a little to the left
+            # another problem: if my road is going from right to left (v <-- u):
+            # the image will still be drawn from `u` but to the right side of u,
+            # so I need to translate it back by the length of the whole road
+
+            upos = graph.vertices.get(u)['pos'] 
+            vpos = graph.vertices.get(v)['pos'] 
+
+            # repeating img
+            # horizontal = upos[1] - vpos[1] == 0 and upos[0] - vpos[0] != 0
+            # road_length = abs(upos[0] - vpos[0]) if horizontal else abs(upos[1] - vpos[1])
+            # img_count = int(road_length) // int(img_width)
+            # # remainder = road_length - img_count * int(img_width)
+            # if horizontal:
+            #     img = pygame.transform.rotate(road_img, -90)
+            # else:
+            #     img = road_img
+
+            # startpos = upos
+            # for i in range(img_count):
+            #     screen.blit(img, (startpos[0] - img_width/2, startpos[1] - img_width/2))
+            #     if horizontal:
+            #         startpos = (startpos[0] + img_width, startpos[1])
+            #     else:
+            #         startpos = (startpos[0], startpos[1] + img_width)
+
+            # scaling img
+            img_pos = (upos[0]-img_width/2,upos[1]-img_width/2)
+            horizontal = upos[1] - vpos[1] == 0 and upos[0] - vpos[0] != 0
+            if horizontal:
+                img = pygame.transform.rotate(road_img, -90)
+                img = pygame.transform.scale(img, (abs(vpos[0] - upos[0]) + img_width, img_width))
+                to_left = vpos[0] - upos[0] < 0
+                if to_left:
+                    img_pos = (img_pos[0] - abs(vpos[0] - upos[0]), img_pos[1])
+            else:
+                img = pygame.transform.rotate(road_img, 0)
+                img = pygame.transform.scale(img, (img_width,abs(vpos[1] - upos[1]) + img_width))
+                to_top = vpos[1] - upos[1] < 0
+                if to_top:
+                    img_pos = (img_pos[0], img_pos[1] - abs(vpos[1] - upos[1]))
+            
+            screen.blit(img, img_pos)
+
+
     # drawing vertices
     for v, vertex in graph.vertices.items():
         color = CYAN
