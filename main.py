@@ -1,13 +1,17 @@
 import pygame
+import pygame_menu
 from pygame.locals import *
+import pygame_menu.themes
+import pygame_menu.widgets
 from Graph import Graph
 from create_graph import create_graph
 from Vehicle import Vehicle
 
 pygame.init()
-MAX_WIDTH = 1000
-MAX_HEIGHT = 700
-screen = pygame.display.set_mode((MAX_WIDTH, MAX_HEIGHT), RESIZABLE)
+info = pygame.display.Info()
+MAX_WIDTH = info.current_w
+MAX_HEIGHT = info.current_h
+screen = pygame.display.set_mode((MAX_WIDTH, MAX_HEIGHT), FULLSCREEN)
 pygame.display.set_caption("Traffic Simulation")
 # pygame.display.toggle_fullscreen()
 
@@ -27,6 +31,7 @@ CYAN = (0, 125, 255)
 
 # font
 font = pygame.font.Font(None, 15)
+font2 = pygame.font.Font(None, 25)
 
 # creating graph
 graph = Graph()
@@ -39,6 +44,42 @@ vehicles = [
     Vehicle(2, 'RN', 'LM', BLUE, graph), 
     Vehicle(3, 'BK', 'TL', YELLOW, graph), 
 ]
+
+last_vehicle_id = 3
+
+# pygame-menu
+from_input = 'LA'
+to_input = 'BC'
+color_input = (255, 0, 0)
+
+def from_onchange(x):
+    global from_input
+    from_input = x
+    
+def to_onchange(x):
+    global to_input
+    to_input = x
+
+def color_onchange(x):
+    global color_input
+    color_input = x
+
+def on_add_vehicle():
+    if graph.vertices.get(from_input) is not None and graph.vertices.get(to_input) is not None:
+        global last_vehicle_id
+        vehicles.append(Vehicle(last_vehicle_id + 1, from_input, to_input, color_input, graph))
+        last_vehicle_id += 1
+
+menu = pygame_menu.Menu("", MAX_WIDTH-900, MAX_HEIGHT, theme=pygame_menu.themes.THEME_DARK)
+menu.set_absolute_position(900, 0)
+# menu.add.label("Press M to toggle map view mode", max_char=-1, font_size=18)
+menu.add.label("You can add a vehicle", max_char=-1, font_size=24, margin=(10, 10))
+menu.add.text_input("From: ", font_size=18, default="LA", background_color=(50, 50, 50), border_color=(255,255,255), padding=(5, 10), border_width=1,margin=(10,10),onchange=from_onchange)
+menu.add.text_input("To: ", font_size=18, default="BC",  background_color=(50, 50, 50), border_color=(255,255,255), padding=(5, 10), border_width=1,margin=(10,10),onchange=to_onchange)
+menu.add.color_input("Choose color: ", font_size=18, color_type=pygame_menu.widgets.COLORINPUT_TYPE_RGB, default=(255,0,0), background_color=(50, 50, 50), border_color=(255,255,255), margin=(10,10),padding=(5, 10), border_width=1, onchange=color_onchange)
+menu.add.button("Click Twice to Add Vehicle", on_add_vehicle, font_size=18, selection_color=(20,20,20), background_color=(255, 255, 255), padding=(10, 20), font_color=(20, 20, 20),margin=(10,10))
+
+
 
 # traffic
 traffic_signals = ['ITL', 'ITR', 'IBR', 'IBL']
@@ -69,8 +110,8 @@ show_lines = False
 run = True
 while run:
     bg_color = BLACK if show_lines else DARK_GREEN # can be taken out of loop for performance, but will need to change bgcolor separately on clicking M
-
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    for event in events:
         if event.type == pygame.QUIT:
             run = False
         elif event.type == pygame.KEYDOWN:
@@ -149,6 +190,9 @@ while run:
         text_surface = font.render(v, True, WHITE)
         screen.blit(text_surface, (vertex['pos'][0]+2, vertex['pos'][1] + 2))
 
+    text_surface = font2.render("Press M to toggle map view", True, WHITE)
+    screen.blit(text_surface, (550, 680))
+
 
     # drawing vehicles
     for vehicle in vehicles:
@@ -185,6 +229,11 @@ while run:
         traffic_i += 1
         if traffic_i > 3:
             traffic_i = 0
+
+    # pygame-menu
+    if menu.is_enabled():
+        menu.update(events)
+        menu.draw(screen)
 
     pygame.display.update()
     clock.tick(60)
