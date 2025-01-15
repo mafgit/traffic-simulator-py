@@ -6,11 +6,22 @@ class Graph:
         self.edges = {}
     
     def add_vertex(self, v, pos, type='point'):
-        self.vertices[v] = {'pos':(100 + pos[0]/3, pos[1]/3 + 250), 'type':type}
+        self.vertices[v] = {'pos':(100 + pos[0]/3, pos[1]/3 + 260), 'type':type}
         # self.vertices[v] = {'pos':((pos[0]*0.5-0), (pos[1]*0.5-0)), 'type':type}
 
-    def add_edge(self, u, v, dist=1, max_traffic = 5, bi=False):
-        edge = {'bi':bi, 'max_traffic':max_traffic, 'traffic':set(), 'dist':dist}
+    def add_edge(self, u, v, max_traffic = 5, bi=False):
+        upos = self.vertices[u]['pos']
+        vpos = self.vertices[v]['pos']
+        horizontal = int(upos[1]) - int(vpos[1]) == 0 and int(upos[0]) - int(vpos[0]) != 0
+        dist = 0
+        if horizontal:
+            dist = abs(upos[0] - vpos[0])
+        else:
+            dist = abs(upos[1] - vpos[1])
+
+        if u == 'LG' and v == 'ITL':
+            print(dist)
+        edge = {'bi':bi, 'max_traffic':max_traffic, 'traffic':set(), 'dist': dist}
         self.edges[(u, v)] = edge
         if bi:
             self.edges[(v, u)] = edge

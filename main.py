@@ -55,9 +55,13 @@ def is_stopping_vertex(u):
 
     return False
 
-img_width = 20
-road_img = pygame.image.load('textures/road.jpg')
-road_img = pygame.transform.scale(road_img, (img_width, img_width))
+# textures
+main_road_img_width = 20
+service_road_img_width = 12
+main_road_img = pygame.image.load('textures/main-road-no-outline.jpg')
+main_road_img = pygame.transform.scale(main_road_img, (main_road_img_width, main_road_img_width))
+service_road_img = pygame.image.load('textures/service-road-no-outline.jpg')
+service_road_img = pygame.transform.scale(service_road_img, (service_road_img_width, service_road_img_width))
 
 # game loop
 clock = pygame.time.Clock()
@@ -111,17 +115,20 @@ while run:
             #         startpos = (startpos[0], startpos[1] + img_width)
 
             # scaling img
-            img_pos = (upos[0]-img_width/2,upos[1]-img_width/2)
+            is_main_road = not graph.edges[(u, v)]['bi']
+            which_img = main_road_img if is_main_road else service_road_img
+            which_img_width = main_road_img_width if is_main_road else service_road_img_width
+            img_pos = (upos[0]-which_img_width/2,upos[1]-which_img_width/2)
             horizontal = upos[1] - vpos[1] == 0 and upos[0] - vpos[0] != 0
             if horizontal:
-                img = pygame.transform.rotate(road_img, -90)
-                img = pygame.transform.scale(img, (abs(vpos[0] - upos[0]) + img_width, img_width))
+                img = pygame.transform.rotate(which_img, -90)
+                img = pygame.transform.scale(img, (abs(vpos[0] - upos[0]) + which_img_width, which_img_width))
                 to_left = vpos[0] - upos[0] < 0
                 if to_left:
                     img_pos = (img_pos[0] - abs(vpos[0] - upos[0]), img_pos[1])
             else:
-                img = pygame.transform.rotate(road_img, 0)
-                img = pygame.transform.scale(img, (img_width,abs(vpos[1] - upos[1]) + img_width))
+                img = pygame.transform.rotate(which_img, 0)
+                img = pygame.transform.scale(img, (which_img_width,abs(vpos[1] - upos[1]) + which_img_width))
                 to_top = vpos[1] - upos[1] < 0
                 if to_top:
                     img_pos = (img_pos[0], img_pos[1] - abs(vpos[1] - upos[1]))
