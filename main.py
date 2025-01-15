@@ -77,7 +77,7 @@ menu.add.label("You can add a vehicle", max_char=-1, font_size=24, margin=(10, 1
 menu.add.text_input("From: ", font_size=18, default="LA", background_color=(50, 50, 50), border_color=(255,255,255), padding=(5, 10), border_width=1,margin=(10,10),onchange=from_onchange)
 menu.add.text_input("To: ", font_size=18, default="BC",  background_color=(50, 50, 50), border_color=(255,255,255), padding=(5, 10), border_width=1,margin=(10,10),onchange=to_onchange)
 menu.add.color_input("Choose color: ", font_size=18, color_type=pygame_menu.widgets.COLORINPUT_TYPE_RGB, default=(255,0,0), background_color=(50, 50, 50), border_color=(255,255,255), margin=(10,10),padding=(5, 10), border_width=1, onchange=color_onchange)
-menu.add.button("Click Twice to Add Vehicle", on_add_vehicle, font_size=18, selection_color=(20,20,20), background_color=(255, 255, 255), padding=(10, 20), font_color=(20, 20, 20),margin=(10,10))
+menu.add.button("Click to Add Vehicle", on_add_vehicle, font_size=18, selection_color=(20,20,20), background_color=(255, 255, 255), padding=(10, 20), font_color=(20, 20, 20),margin=(10,10))
 
 
 
