@@ -157,18 +157,20 @@ while run:
             if is_stopping_vertex(vehicle.path[vehicle.i - 1]):
                 vehicle.speed = 0
             else:
-                vehicle.speed = 0.01
+                vehicle.speed = 1
 
             vehicle.end_pos = graph.vertices[vehicle.path[vehicle.i]]['pos']
             # graph.enter_edge(vehicle.path[vehicle.i-1], vehicle.path[vehicle.i], vehicle.id)
-            
 
-            # linear interpolation
-            vehicle.x = vehicle.start_pos[0] + (vehicle.end_pos[0] - vehicle.start_pos[0]) * vehicle.t
-            vehicle.y = vehicle.start_pos[1] + (vehicle.end_pos[1] - vehicle.start_pos[1]) * vehicle.t
+            edge_dist = graph.edges[(vehicle.path[vehicle.i-1], vehicle.path[vehicle.i])]['dist']
+            # linear interpolation formula to calculate new x and y positions of vehicle:
+            vehicle.x = vehicle.start_pos[0] + (vehicle.end_pos[0] - vehicle.start_pos[0]) * (vehicle.t / edge_dist)
+            vehicle.y = vehicle.start_pos[1] + (vehicle.end_pos[1] - vehicle.start_pos[1]) * (vehicle.t / edge_dist)
+            # ratio = vehicle.t / edge_dist
+            # vehicle.t means distance travelled by vehicle  
 
             vehicle.t += vehicle.speed
-            if (vehicle.t>=1):
+            if (vehicle.t>=edge_dist):
                 # graph.exit_edge(vehicle.path[vehicle.i-1], vehicle.path[vehicle.i], vehicle.id)
                 vehicle.t = 0
                 vehicle.i += 1
