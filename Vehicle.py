@@ -1,5 +1,5 @@
 class Vehicle:
-    def __init__(self, id, u, v, color, graph, speed=1):
+    def __init__(self, id, u, v, color, speed, graph):
         self.id = id
         self.u = u
         self.v = v
@@ -10,3 +10,5 @@ class Vehicle:
         self.t = 0
         self.speed = speed
         self.color = color
+        self.x = 0
+        self.y = 0

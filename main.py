@@ -6,11 +6,14 @@ import pygame_menu.widgets
 from Graph import Graph
 from create_graph import create_graph
 from Vehicle import Vehicle
+import random
 
 pygame.init()
 info = pygame.display.Info()
 MAX_WIDTH = info.current_w
 MAX_HEIGHT = info.current_h
+# MAX_WIDTH = 1000
+# MAX_HEIGHT = 700
 screen = pygame.display.set_mode((MAX_WIDTH, MAX_HEIGHT), FULLSCREEN)
 pygame.display.set_caption("Traffic Simulation")
 # pygame.display.toggle_fullscreen()
@@ -38,14 +41,25 @@ graph = Graph()
 create_graph(graph)
 
 # vehicles
-vehicles = [
-    Vehicle(0, 'LO', 'RE', PINK, graph), 
-    Vehicle(1, 'TP', 'BA', ORANGE, graph), 
-    Vehicle(2, 'RN', 'LM', BLUE, graph), 
-    Vehicle(3, 'BK', 'TL', YELLOW, graph), 
-]
+vehicles = []
+vehicle_speeds = [0.8, 0.9, 1.0, 1.1, 1.2]
+vehicle_colors = [PINK, ORANGE, YELLOW, PURPLE, CYAN, WHITE, GREEN, RED]
+vehicle_id = 0
+num_vehicles = 30
+for i in range(num_vehicles):
+    random_from = graph.get_random_vertex()
+    random_to = graph.get_random_vertex()
+    random_color = vehicle_colors[random.randint(0, len(vehicle_colors) - 1)]
+    random_speed = vehicle_speeds[random.randint(0, len(vehicle_speeds) - 1)]
+    vehicles.append(Vehicle(vehicle_id, random_from, random_to, random_color, random_speed, graph))
+    vehicle_id += 1
 
-last_vehicle_id = 3
+# vehicles = [
+#     Vehicle(0, 'LO', 'RE', PINK, graph), 
+#     Vehicle(1, 'TP', 'BA', ORANGE, graph), 
+#     Vehicle(2, 'RN', 'LM', BLUE, graph), 
+#     Vehicle(3, 'BK', 'TL', YELLOW, graph), 
+# ]
 
 # pygame-menu
 from_input = 'LA'
@@ -96,6 +110,9 @@ def is_stopping_vertex(u):
 
     return False
 
+def coords_are_equal(a, b):
+    return abs(a[0] - b[0]) <= 1e-5 and abs(a[1] - b[1]) <= 1e-5
+
 # textures
 main_road_img_width = 20
 service_road_img_width = 12
@@ -123,7 +140,11 @@ while run:
     # drawing edges
     for (u, v), edge in graph.edges.items():
         if show_lines:
-            color = GRAY if edge['bi'] else GREEN
+            if len(edge['traffic']) >= edge['max_traffic']:
+                color = RED
+            else:
+                color = GRAY if edge['bi'] else GREEN
+
             pygame.draw.line(screen, color, graph.vertices[u]['pos'], graph.vertices[v]['pos'], 2)
         else:
             # problems with drawing roads:
@@ -193,7 +214,6 @@ while run:
     text_surface = font2.render("Press M to toggle map view", True, WHITE)
     screen.blit(text_surface, (550, 680))
 
-
     # drawing vehicles
     for vehicle in vehicles:
         if (vehicle.i < len(vehicle.path)):
@@ -203,10 +223,26 @@ while run:
             else:
                 vehicle.speed = 1
 
-            vehicle.end_pos = graph.vertices[vehicle.path[vehicle.i]]['pos']
-            # graph.enter_edge(vehicle.path[vehicle.i-1], vehicle.path[vehicle.i], vehicle.id)
+            start_vertex = vehicle.path[vehicle.i-1]
+            end_vertex = vehicle.path[vehicle.i]
+            vehicle.end_pos = graph.vertices[end_vertex]['pos']
+            edge = (start_vertex, end_vertex)
+            coords = (vehicle.x, vehicle.y)
 
-            edge_dist = graph.edges[(vehicle.path[vehicle.i-1], vehicle.path[vehicle.i])]['dist']
+            # enter edge if at start of edge
+            if coords_are_equal(coords, graph.vertices[start_vertex]['pos']):
+                graph.edges[edge]['traffic'].add(vehicle.id)
+
+            # exit edge
+            # if coords_are_equal(coords, graph.vertices[end_vertex]['pos']):
+            #     pass
+
+            # if (vehicle.id == 0):
+                # print(start_vertex, end_vertex)
+                # print(coords, graph.vertices[end_vertex]['pos'], coords_are_equal(coords, graph.vertices[end_vertex]['pos']))
+                # pass
+            
+            edge_dist = graph.edges[edge]['dist']
             # linear interpolation formula to calculate new x and y positions of vehicle:
             vehicle.x = vehicle.start_pos[0] + (vehicle.end_pos[0] - vehicle.start_pos[0]) * (vehicle.t / edge_dist)
             vehicle.y = vehicle.start_pos[1] + (vehicle.end_pos[1] - vehicle.start_pos[1]) * (vehicle.t / edge_dist)
@@ -215,11 +251,24 @@ while run:
 
             vehicle.t += vehicle.speed
             if (vehicle.t>=edge_dist):
+                graph.edges[edge]['traffic'].remove(vehicle.id)
+
                 # graph.exit_edge(vehicle.path[vehicle.i-1], vehicle.path[vehicle.i], vehicle.id)
                 vehicle.t = 0
                 vehicle.i += 1
                 vehicle.start_pos = vehicle.end_pos
             
+            # print(len(graph.edges[('LO', 'LG')]['traffic']))
+        else:
+            pass
+            # remove vehicle from vehicles (also remove them from the edge they are in)
+            # graph.edges[(vehicle.path[vehicle.i - 2], vehicle.path[vehicle.i-1])]['traffic'].remove(vehicle.id)
+            # index = 0
+            # for i, v in enumerate(vehicles):
+            #     if v.id == vehicle.id:
+            #         index = i
+            # vehicles.pop(index)
+
         pygame.draw.rect(screen, vehicle.color, (vehicle.x-5, vehicle.y-5, 10, 10))
         
     # updating traffic light
@@ -235,7 +284,7 @@ while run:
         menu.update(events)
         menu.draw(screen)
 
-    pygame.display.update()
-    clock.tick(60)
+    pygame.display.update() # or flip()
+    clock.tick(60) # 60 fps
 
 pygame.quit()
