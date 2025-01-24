@@ -15,7 +15,7 @@ class Graph:
         random_index = random.randint(0, len(vertex_names) - 1)
         return vertex_names[random_index]
 
-    def add_edge(self, u, v, max_traffic = 2, bi=False):
+    def add_edge(self, u, v, max_traffic=3, bi=False):
         upos = self.vertices[u]['pos']
         vpos = self.vertices[v]['pos']
         horizontal = int(upos[1]) - int(vpos[1]) == 0 and int(upos[0]) - int(vpos[0]) != 0

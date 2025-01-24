@@ -12,3 +12,8 @@
   - Can **add new vehicles** by selecting desired locations and color
 - UI (so far):
   ![UI](readme_imgs/screenshot.png)
+
+### Read this if you think there is a bug
+
+- Cars are allowed in this app to go over each other. Multiple cars can stop at a vertex
+- Due to the above point, traffic is affected
