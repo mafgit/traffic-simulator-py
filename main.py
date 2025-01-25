@@ -46,6 +46,7 @@ vehicle_speeds = [0.8, 0.9, 1.0, 1.1, 1.2]
 vehicle_colors = [PINK, ORANGE, YELLOW, PURPLE, CYAN, WHITE, GREEN, RED]
 vehicle_id = 0
 num_vehicles = 30
+last_vehicle_id = num_vehicles - 1
 for i in range(num_vehicles):
     random_from = graph.get_random_vertex()
     random_to = graph.get_random_vertex()
@@ -81,7 +82,7 @@ def color_onchange(x):
 def on_add_vehicle():
     if graph.vertices.get(from_input) is not None and graph.vertices.get(to_input) is not None:
         global last_vehicle_id
-        vehicles.append(Vehicle(last_vehicle_id + 1, from_input, to_input, color_input, graph))
+        vehicles.append(Vehicle(last_vehicle_id + 1, from_input, to_input, color_input, 1, graph))
         last_vehicle_id += 1
 
 menu = pygame_menu.Menu("", MAX_WIDTH-900, MAX_HEIGHT, theme=pygame_menu.themes.THEME_DARK)
